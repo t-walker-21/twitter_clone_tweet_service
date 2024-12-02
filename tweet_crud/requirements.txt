@@ -1,0 +1,4 @@
+pydantic
+mongoengine
+fastapi
+uvicorn[standard]
