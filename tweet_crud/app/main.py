@@ -19,7 +19,7 @@ def _get_tweets_of_user(user_id: str):
 
 @app.post("/tweets", status_code=201)
 def _create_tweet(tweet: Tweet) -> str:
-    tweet_id = create_tweet(tweet_content=tweet.tweet_content, username=tweet.username, user_id=tweet.user_id)
+    tweet_id = create_tweet(tweet_content=tweet.tweet_content, username=tweet.username, user_id=tweet.user_id, mentions=tweet.mentions, hashtags=tweet.hashtags)
     return tweet_id
 
 @app.delete("/tweets/{tweet_id}")
