@@ -14,19 +14,26 @@ def create_tweet(tweet_content=str, username=str, user_id=str, mentions:List[str
 
 def delete_tweet(tweet_id:str) -> None:
 
+    target_tweet = None
+    
     for tweet in TweetDocument.objects(id=tweet_id):
-        tweet.delete()
-
-    return {'success': True}
+        target_tweet = tweet
+        
+    if target_tweet:
+        target_tweet.delete()
+        
+        return {'success': True}
+    
+    return {'success': False}
 
 def update_tweet(tweet_id: str, user_id: str, tweet_content: str) -> str:
 
-    updated_tweet = None
+    target_tweet = None
     for tweet in TweetDocument.objects(id=tweet_id):
-        updated_tweet = tweet
+        target_tweet = tweet
     
-    if updated_tweet:
-        return updated_tweet.update(tweet_content=tweet_content, is_edited=True)
+    if target_tweet:
+        return target_tweet.update(tweet_content=tweet_content, is_edited=True)
     
     return 0
 
