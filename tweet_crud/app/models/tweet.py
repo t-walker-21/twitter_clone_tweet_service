@@ -9,5 +9,3 @@ class Tweet(BaseModel):
     mentions: Optional[List[str]]
     hashtags: Optional[List[str]]
     created_at: datetime = Field(default_factory=datetime.now)
-    user_id: str
-    username: str
