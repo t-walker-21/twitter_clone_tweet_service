@@ -2,11 +2,13 @@ from app.db.models import TweetDocument
 from typing import List, Dict
 import json
 
-def create_tweet(tweet_content=str, username=str, user_id=str) -> str:
+def create_tweet(tweet_content=str, username=str, user_id=str, mentions:List[str]=None, hashtags:List[str]=None) -> str:
     
     new_tweet = TweetDocument(tweet_content=tweet_content,
                               username=username,
-                              user_id=user_id)
+                              user_id=user_id,
+                              mentions=mentions,
+                              hashtags=hashtags)
     
     return str(new_tweet.save().id)
 
@@ -48,7 +50,7 @@ def get_tweets_of_user(user_id: str) -> List[Dict]:
 
     tweets = []
     
-    for tweet in TweetDocument.objects(user_id=user_id):
+    for tweet in TweetDocument.objects(user_id=user_id).order_by(["created_at"]):
         tweets.append(json.loads(tweet.to_json()))
 
     return tweets

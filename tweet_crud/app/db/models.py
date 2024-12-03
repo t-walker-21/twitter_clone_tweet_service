@@ -1,5 +1,5 @@
 from mongoengine import Document, connect
-from mongoengine.fields import StringField, ListField, DateTimeField
+from mongoengine.fields import StringField, ListField, DateTimeField, BooleanField
 from datetime import datetime
 import os
 
@@ -13,3 +13,4 @@ class TweetDocument(Document):
     mentions = ListField(field=user_id)
     hashtags = ListField(field=StringField())
     created_at = DateTimeField(default=datetime.now)
+    is_edited = BooleanField(default=False)
