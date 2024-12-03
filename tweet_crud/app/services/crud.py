@@ -22,11 +22,13 @@ def delete_tweet(tweet_id:str) -> None:
 def update_tweet(tweet_id: str, user_id: str, tweet_content: str) -> str:
 
     updated_tweet = None
-    
-    for tweet in TweetDocument.objects(id=tweet_id, user_id=user_id):
+    for tweet in TweetDocument.objects(id=tweet_id):
         updated_tweet = tweet
     
-    updated_tweet.tweet_content = tweet_content
+    if updated_tweet:
+        return updated_tweet.update(tweet_content=tweet_content, is_edited=True)
+    
+    return 0
 
 def get_tweets() -> List[Dict]:
 
@@ -50,7 +52,7 @@ def get_tweets_of_user(user_id: str) -> List[Dict]:
 
     tweets = []
     
-    for tweet in TweetDocument.objects(user_id=user_id).order_by(["created_at"]):
+    for tweet in TweetDocument.objects(user_id=user_id).order_by('-created_at'):
         tweets.append(json.loads(tweet.to_json()))
 
     return tweets
