@@ -28,4 +28,10 @@ def _delete_tweet(tweet_id: str) -> None:
 
 @app.put("/tweets/{tweet_id}")
 def _update_tweet(tweet_id:str, user_id:str, tweet_content:str):
-    update_tweet(tweet_id=tweet_id, user_id=user_id, tweet_content=tweet_content)
+    result = update_tweet(tweet_id=tweet_id, user_id=user_id, tweet_content=tweet_content)
+    
+    if result:
+        return {'success': True}
+    
+    else:
+        return {'success': False}
