@@ -12,5 +12,6 @@ class TweetDocument(Document):
     likes = ListField(field=user_id)
     mentions = ListField(field=user_id)
     hashtags = ListField(field=StringField())
+    media_url = StringField(required=False)
     created_at = DateTimeField(default=datetime.now)
     is_edited = BooleanField(default=False)
