@@ -8,4 +8,5 @@ class Tweet(BaseModel):
     likes: Optional[List[str]]
     mentions: Optional[List[str]]
     hashtags: Optional[List[str]]
+    media_url: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.now)
