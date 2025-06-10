@@ -15,3 +15,15 @@ class TweetDocument(Document):
     media_url = StringField(required=False)
     created_at = DateTimeField(default=datetime.now)
     is_edited = BooleanField(default=False)
+
+class TweetReplyDocument(Document):
+    tweet_content = StringField(required=True, max_length=200)
+    tweet_id = StringField(required=True)
+    username = StringField(required=True)
+    user_id = StringField(required=True)
+    likes = ListField(field=user_id)
+    mentions = ListField(field=user_id)
+    hashtags = ListField(field=StringField())
+    media_url = StringField(required=False)
+    created_at = DateTimeField(default=datetime.now)
+    is_edited = BooleanField(default=False)

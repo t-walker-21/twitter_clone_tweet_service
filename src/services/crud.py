@@ -112,3 +112,28 @@ def remove_like_from_tweet(tweet_id: str, user_id: str) -> bool:
             return True
     
     return False
+
+def create_reply_to_tweet(tweet_id: str, reply_content: str, username: str, user_id: str) -> str:
+    """
+    Create a reply to a tweet.
+    
+    Args:
+        tweet_id (str): The ID of the tweet to reply to.
+        reply_content (str): The content of the reply.
+        username (str): The username of the user replying.
+        user_id (str): The ID of the user replying.
+        
+    Returns:
+        str: The ID of the created reply.
+    """
+    
+    new_reply = TweetDocument(tweet_content=reply_content,
+                              username=username,
+                              user_id=user_id,
+                              reply_to=tweet_id)
+    
+    reply_id = str(new_reply.save().id)
+
+    logger.info(f"Created reply with ID: {reply_id} to tweet ID: {tweet_id} by user: {username}")
+    
+    return reply_id
