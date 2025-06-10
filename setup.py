@@ -5,5 +5,5 @@ setup(
     version='1.0', 
     description='A simple crud app replicating a simplistic tweet service', 
     author='Tevon Walker',  
-    packages= find_packages()
+    packages= find_packages(where='src'),
 ) 

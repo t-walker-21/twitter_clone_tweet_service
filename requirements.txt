@@ -3,3 +3,4 @@ mongoengine
 fastapi
 uvicorn[standard]
 pyjwt[crypto]
+pytest
