@@ -4,7 +4,6 @@ WORKDIR application
 COPY . .
 
 RUN pip install -r requirements.txt
-RUN pip install .
 
 WORKDIR app/ 
 
