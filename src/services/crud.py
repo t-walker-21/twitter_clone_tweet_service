@@ -12,7 +12,7 @@ def create_tweet(tweet_content=str, username=str, user_id=str, media_url:str=Non
                               hashtags=hashtags,
                               media_url=media_url)
     
-    tweet_id = new_tweet.save().id
+    tweet_id = str(new_tweet.save().id)
 
     logger.info(f"Created tweet with ID: {tweet_id} by user: {username}")
     
