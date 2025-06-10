@@ -26,7 +26,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     
     try:
         user_info = jwt.decode(jwt=token, key=os.environ["JWT_SECRET"], algorithms=["HS256",])
-        return user_info  # In a real application, you would return a user object
+        return user_info
     
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=403, detail="Token expired")
