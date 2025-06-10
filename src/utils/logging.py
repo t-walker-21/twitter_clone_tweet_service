@@ -2,7 +2,7 @@ import logging
 
 # Configure the logger
 logger = logging.getLogger("app_logger")
-logger.setLevel(logging.DEBUG)  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+logger.setLevel(logging.DEBUG)
 
 # Create a console handler
 console_handler = logging.StreamHandler()

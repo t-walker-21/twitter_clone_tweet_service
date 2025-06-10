@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException, APIRouter
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
-from models.tweet import Tweet
-from services.crud import get_tweet, get_tweets_of_user, get_tweets, create_tweet, update_tweet, delete_tweet, add_like_to_tweet, remove_like_from_tweet
+from src.models.tweet import Tweet
+from src.services.crud import get_tweet, get_tweets_of_user, get_tweets, create_tweet, update_tweet, delete_tweet, add_like_to_tweet, remove_like_from_tweet
 import jwt
 import os
 
