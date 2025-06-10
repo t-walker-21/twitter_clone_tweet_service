@@ -4,9 +4,7 @@ from src.services.crud import (
     create_tweet,
     delete_tweet,
     update_tweet,
-    get_tweets,
     get_tweet,
-    get_tweets_of_user,
     add_like_to_tweet,
     remove_like_from_tweet,
 )
