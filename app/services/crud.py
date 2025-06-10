@@ -11,8 +11,6 @@ def create_tweet(tweet_content=str, username=str, user_id=str, media_url:str=Non
                               hashtags=hashtags,
                               media_url=media_url)
     
-    print (new_tweet.to_json())
-    
     return str(new_tweet.save().id)
 
 def delete_tweet(tweet_id:str) -> None:
