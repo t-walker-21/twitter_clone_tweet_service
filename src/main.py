@@ -79,6 +79,6 @@ def _remove_like(tweet_id: str, current_user: str = Depends(get_current_user)) -
     result = remove_like_from_tweet(tweet_id=tweet_id, user_id=current_user['sub'])
     if result:
         return {'success': True}
-    raise HTTPException(status_code=400, detail="Could not remove like")
+    raise HTTPException(status_code=404, detail="Could not remove like, tweet does not exist")
 
 app.include_router(router)
