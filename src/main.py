@@ -49,7 +49,7 @@ def _get_tweets(current_user: str = Depends(get_current_user)):
     start_time = time.time()
     result = get_tweets()
     end_time = time.time()
-    latency = (end_time - start_time) * 1000
+    latency = (end_time - start_time)
     REQUEST_DURATION.labels(endpoint="/get/tweets").observe(latency)
     REQUESTS.labels(endpoint="/tweets/").inc()
     return {'tweets': result}
