@@ -9,6 +9,7 @@ import os
 from src.models.tweet import Tweet
 from src.services.crud import get_tweet, get_tweets_of_user, get_tweets, create_tweet, update_tweet, delete_tweet, add_like_to_tweet, remove_like_from_tweet
 from src.utils.metrics import REQUESTS, ERRORS, REQUEST_DURATION
+from src.utils.logging import logger
 
 app = FastAPI()
 router = APIRouter(prefix="/tweets")
@@ -51,6 +52,7 @@ def _get_tweets(current_user: str = Depends(get_current_user)):
     end_time = time.time()
     latency = (end_time - start_time)
     REQUEST_DURATION.labels(endpoint="/get/tweets").observe(latency)
+    logger.info(f"Retrieved {len(result)} tweets in {latency:.2f} seconds")
     REQUESTS.labels(endpoint="/tweets/").inc()
     return {'tweets': result}
 
