@@ -1,6 +1,8 @@
-from src.db.models import TweetDocument
 from typing import List, Dict
 import json
+import time
+import random
+from src.db.models import TweetDocument
 from src.utils.logging import logger
 
 def create_tweet(tweet_content=str, username=str, user_id=str, media_url:str=None, mentions:List[str]=None, hashtags:List[str]=None) -> str:
@@ -50,6 +52,8 @@ def update_tweet(tweet_id: str, user_id: str, tweet_content: str) -> str:
 def get_tweets() -> List[Dict]:
 
     tweets = []
+
+    time.sleep(random.uniform(0.1, 3.5))
     
     for tweet in TweetDocument.objects().order_by('-created_at'):
         tweets.append(json.loads(tweet.to_json()))
