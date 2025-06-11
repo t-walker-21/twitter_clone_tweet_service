@@ -49,7 +49,8 @@ def _get_tweets(current_user: str = Depends(get_current_user)):
     start_time = time.time()
     result = get_tweets()
     end_time = time.time()
-    REQUEST_DURATION.labels(endpoint="/tweets").observe(end_time - start_time)
+    latency = (end_time - start_time) * 1000
+    REQUEST_DURATION.labels(endpoint="/get/tweets").observe(latency)
     REQUESTS.labels(endpoint="/tweets/").inc()
     return {'tweets': result}
 
@@ -67,8 +68,9 @@ def _create_tweet(tweet: Tweet, current_user: str = Depends(get_current_user)) -
     start_time = time.time()
     tweet_id = create_tweet(tweet_content=tweet.tweet_content, username=current_user['username'], user_id=current_user['sub'], mentions=tweet.mentions, hashtags=tweet.hashtags, media_url=tweet.media_url)
     end_time = time.time()
-    REQUEST_DURATION.labels(endpoint="/tweets/").observe(end_time - start_time)
-    REQUESTS.labels(endpoint="/tweets/").inc()
+    latency = (end_time - start_time) * 1000
+    REQUEST_DURATION.labels(endpoint="/post/tweets/").observe(latency)
+    REQUESTS.labels(endpoint="/post/tweets/").inc()
     return tweet_id
 
 @router.delete("/tweets/{tweet_id}")
@@ -91,7 +93,8 @@ def _add_like(tweet_id: str, current_user: str = Depends(get_current_user)) -> d
     result = add_like_to_tweet(tweet_id=tweet_id, user_id=current_user['sub'])
     end_time = time.time()
     REQUESTS.labels(endpoint="/tweets/likes").inc()
-    REQUEST_DURATION.labels(endpoint="/tweets/likes").observe(end_time - start_time)
+    latency = (end_time - start_time) * 1000
+    REQUEST_DURATION.labels(endpoint="/tweets/likes").observe(latency)
     if result:
         return {'success': True}
     raise HTTPException(status_code=400, detail="Could not add like")
