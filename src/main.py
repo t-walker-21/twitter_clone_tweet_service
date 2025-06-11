@@ -50,7 +50,7 @@ def _get_tweets(current_user: str = Depends(get_current_user)):
     result = get_tweets()
     end_time = time.time()
     REQUEST_DURATION.labels(endpoint="/tweets").observe(end_time - start_time)
-    REQUESTS.inc(endpoint="/tweets/")
+    REQUESTS.labels(endpoint="/tweets/").inc()
     return {'tweets': result}
 
 @router.get("/tweets/{tweet_id}")
@@ -68,7 +68,7 @@ def _create_tweet(tweet: Tweet, current_user: str = Depends(get_current_user)) -
     tweet_id = create_tweet(tweet_content=tweet.tweet_content, username=current_user['username'], user_id=current_user['sub'], mentions=tweet.mentions, hashtags=tweet.hashtags, media_url=tweet.media_url)
     end_time = time.time()
     REQUEST_DURATION.labels(endpoint="/tweets/").observe(end_time - start_time)
-    REQUESTS.inc(endpoint="/tweets/")
+    REQUESTS.labels(endpoint="/tweets/").inc()
     return tweet_id
 
 @router.delete("/tweets/{tweet_id}")
@@ -90,7 +90,7 @@ def _add_like(tweet_id: str, current_user: str = Depends(get_current_user)) -> d
     start_time = time.time()
     result = add_like_to_tweet(tweet_id=tweet_id, user_id=current_user['sub'])
     end_time = time.time()
-    REQUESTS.inc(endpoint="/tweets/likes")
+    REQUESTS.labels(endpoint="/tweets/likes").inc()
     REQUEST_DURATION.labels(endpoint="/tweets/likes").observe(end_time - start_time)
     if result:
         return {'success': True}
