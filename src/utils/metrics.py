@@ -11,6 +11,6 @@ ERRORS = Counter("errors_total", "Total number of errors", ["endpoint", "error_t
 # Histogram for measuring request duration
 REQUEST_DURATION = Histogram(
     'request_duration_seconds',
-    'Duration of requests in seconds',
+    'Duration of requests in milliseconds',
     ['endpoint']
 )
