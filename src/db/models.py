@@ -17,8 +17,8 @@ class TweetDocument(Document):
     is_edited = BooleanField(default=False)
 
 class TweetReplyDocument(Document):
+    parent_tweet_id = StringField(required=True)
     tweet_content = StringField(required=True, max_length=200)
-    tweet_id = StringField(required=True)
     username = StringField(required=True)
     user_id = StringField(required=True)
     likes = ListField(field=user_id)

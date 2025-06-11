@@ -7,7 +7,7 @@ import time
 import jwt
 import os
 from src.models.tweet import Tweet
-from src.services.crud import get_tweet, get_tweets_of_user, get_tweets, create_tweet, update_tweet, delete_tweet, add_like_to_tweet, remove_like_from_tweet
+from src.services.crud import get_tweet, get_tweets_of_user, get_tweets, create_tweet, update_tweet, delete_tweet, add_like_to_tweet, remove_like_from_tweet, create_reply_to_tweet, get_tweet_replies
 from src.utils.metrics import REQUESTS, ERRORS, REQUEST_DURATION
 
 app = FastAPI()
@@ -87,7 +87,7 @@ def _update_tweet(tweet_id:str, tweet_content:str, current_user: str = Depends(g
     else:
         return {'success': False}
 
-@router.post("/tweets/{tweet_id}/likes")
+@router.post("/tweets/{tweet_id}/likes", status_code=201)
 def _add_like(tweet_id: str, current_user: str = Depends(get_current_user)) -> dict:
     start_time = time.time()
     result = add_like_to_tweet(tweet_id=tweet_id, user_id=current_user['sub'])
@@ -98,6 +98,15 @@ def _add_like(tweet_id: str, current_user: str = Depends(get_current_user)) -> d
     if result:
         return {'success': True}
     raise HTTPException(status_code=400, detail="Could not add like")
+
+@router.post("/tweets/{tweet_id}/replies", status_code=201)
+def add_comment_to_tweet(tweet: Tweet, current_user: str = Depends(get_current_user)) -> str:
+    reply_id = create_reply_to_tweet(parent_tweet_id=tweet.tweet_id, tweet_content=tweet.tweet_content, username=current_user['username'], user_id=current_user['sub'])
+    return reply_id
+
+@router.get("/tweets/{tweet_id}/replies")
+def _get_tweet_replies(tweet_id: str, current_user: str = Depends(get_current_user)):
+    return {'tweets': get_tweet_replies(tweet_id=tweet_id)}
 
 @router.delete("/tweets/{tweet_id}/likes")
 def _remove_like(tweet_id: str, current_user: str = Depends(get_current_user)) -> dict:

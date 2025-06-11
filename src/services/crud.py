@@ -1,11 +1,9 @@
 from typing import List, Dict
 import json
-import time
-import random
-from src.db.models import TweetDocument
+from src.db.models import TweetDocument, TweetReplyDocument
 from src.utils.logging import logger
 
-def create_tweet(tweet_content=str, username=str, user_id=str, media_url:str=None, mentions:List[str]=None, hashtags:List[str]=None) -> str:
+def create_tweet(tweet_content:str, username:str, user_id:str, media_url:str=None, mentions:List[str]=None, hashtags:List[str]=None) -> str:
     
     new_tweet = TweetDocument(tweet_content=tweet_content,
                               username=username,
@@ -52,8 +50,6 @@ def update_tweet(tweet_id: str, user_id: str, tweet_content: str) -> str:
 def get_tweets() -> List[Dict]:
 
     tweets = []
-
-    time.sleep(random.uniform(0.1, 3.5))
     
     for tweet in TweetDocument.objects().order_by('-created_at'):
         tweets.append(json.loads(tweet.to_json()))
@@ -117,27 +113,34 @@ def remove_like_from_tweet(tweet_id: str, user_id: str) -> bool:
     
     return False
 
-def create_reply_to_tweet(tweet_id: str, reply_content: str, username: str, user_id: str) -> str:
-    """
-    Create a reply to a tweet.
+def create_reply_to_tweet(parent_tweet_id:str, tweet_content:str, username:str, user_id:str, media_url:str=None, mentions:List[str]=None, hashtags:List[str]=None) -> str:
     
-    Args:
-        tweet_id (str): The ID of the tweet to reply to.
-        reply_content (str): The content of the reply.
-        username (str): The username of the user replying.
-        user_id (str): The ID of the user replying.
-        
-    Returns:
-        str: The ID of the created reply.
-    """
+    new_tweet_reply = TweetReplyDocument(parent_tweet_id=parent_tweet_id,
+                            tweet_content=tweet_content,
+                            username=username,
+                            user_id=user_id,
+                            mentions=mentions,
+                            hashtags=hashtags,
+                            media_url=media_url)
     
-    new_reply = TweetDocument(tweet_content=reply_content,
-                              username=username,
-                              user_id=user_id,
-                              reply_to=tweet_id)
-    
-    reply_id = str(new_reply.save().id)
 
-    logger.info(f"Created reply with ID: {reply_id} to tweet ID: {tweet_id} by user: {username}")
+    reply_id = str(new_tweet_reply.save().id)
+
+    logger.info(f"Created reply {reply_id} to tweet ID: {parent_tweet_id} by user: {username}")
     
     return reply_id
+
+def get_tweet_replies(tweet_id: str) -> List:
+
+    tweet_replies = []
+
+    logger.info(f"Retrieving replies for tweet ID: {tweet_id}")
+    
+    # Get replies ordered by creation date
+    for tweet in TweetReplyDocument.objects(parent_tweet_id=tweet_id).order_by('-created_at'):
+        tweet_dict = json.loads(tweet.to_json())
+        tweet_replies.append(tweet_dict)
+    
+    logger.info(f"Retrieved {len(tweet_replies)} replies for tweet ID: {tweet_id}")
+
+    return tweet_replies
