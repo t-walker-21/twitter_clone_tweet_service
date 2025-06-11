@@ -12,6 +12,7 @@ class TweetComment(Document):
     created_at = DateTimeField(default=datetime.now)
     is_edited = BooleanField(default=False)
     likes = ListField(field=user_id)
+    media_url = StringField(required=False)
 
 class TweetDocument(Document):
     tweet_content = StringField(required=True, max_length=200)
