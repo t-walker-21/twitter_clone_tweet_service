@@ -3,6 +3,7 @@ from fastapi.responses import Response
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
+import time
 import jwt
 import os
 from src.models.tweet import Tweet
@@ -45,10 +46,10 @@ def metrics():
 
 @router.get("/tweets/")
 def _get_tweets(current_user: str = Depends(get_current_user)):
-    start_time = REQUEST_DURATION.start_timer()
+    start_time = time.time()
     result = get_tweets()
-    end_time = start_time.end()
-    REQUEST_DURATION.labels(endpoint="/tweets").observe(end_time)
+    end_time = time.time()
+    REQUEST_DURATION.labels(endpoint="/tweets").observe(end_time - start_time)
     REQUESTS.inc()
     return {'tweets': result}
 
@@ -63,10 +64,10 @@ def _get_tweets_of_user(user_id: str, current_user: str = Depends(get_current_us
 @router.post("/tweets/", status_code=201)
 def _create_tweet(tweet: Tweet, current_user: str = Depends(get_current_user)) -> str:
 
-    start_time = REQUEST_DURATION.start_timer()
+    start_time = time.time()
     tweet_id = create_tweet(tweet_content=tweet.tweet_content, username=current_user['username'], user_id=current_user['sub'], mentions=tweet.mentions, hashtags=tweet.hashtags, media_url=tweet.media_url)
-    end_time = start_time.end()
-    REQUEST_DURATION.labels(endpoint="/tweets/").observe(end_time)
+    end_time = time.time()
+    REQUEST_DURATION.labels(endpoint="/tweets/").observe(end_time - start_time)
     REQUESTS.inc(endpoint="/tweets/")
     return tweet_id
 
@@ -86,10 +87,11 @@ def _update_tweet(tweet_id:str, tweet_content:str, current_user: str = Depends(g
 
 @router.post("/tweets/{tweet_id}/likes")
 def _add_like(tweet_id: str, current_user: str = Depends(get_current_user)) -> dict:
-    start_time = REQUEST_DURATION.start_timer()
+    start_time = time.time()
     result = add_like_to_tweet(tweet_id=tweet_id, user_id=current_user['sub'])
-    end_time = start_time.end()
+    end_time = time.time()
     REQUESTS.inc(endpoint="/tweets/likes")
+    REQUEST_DURATION.labels(endpoint="/tweets/likes").observe(end_time - start_time)
     if result:
         return {'success': True}
     raise HTTPException(status_code=400, detail="Could not add like")
