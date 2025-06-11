@@ -50,7 +50,7 @@ def _get_tweets(current_user: str = Depends(get_current_user)):
     result = get_tweets()
     end_time = time.time()
     REQUEST_DURATION.labels(endpoint="/tweets").observe(end_time - start_time)
-    REQUESTS.inc()
+    REQUESTS.inc(endpoint="/tweets/")
     return {'tweets': result}
 
 @router.get("/tweets/{tweet_id}")
