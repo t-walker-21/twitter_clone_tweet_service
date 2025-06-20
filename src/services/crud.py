@@ -2,6 +2,7 @@ from typing import List, Dict
 import json
 from src.db.models import TweetDocument, TweetReplyDocument
 from src.utils.logging import logger
+from functools import lru_cache
 
 def create_tweet(tweet_content:str, username:str, user_id:str, media_url:str=None, mentions:List[str]=None, hashtags:List[str]=None) -> str:
     
@@ -47,17 +48,19 @@ def update_tweet(tweet_id: str, user_id: str, tweet_content: str) -> str:
     
     return 0
 
+@lru_cache(maxsize=128)
 def get_tweets() -> List[Dict]:
 
     tweets = []
     
-    for tweet in TweetDocument.objects().limit(2).order_by('-created_at'):
+    for tweet in TweetDocument.objects().order_by('-created_at'):
         tweets.append(json.loads(tweet.to_json()))
 
     logger.info(f"Retrieved {len(tweets)} tweets.")
 
     return tweets
 
+@lru_cache(maxsize=128)
 def get_tweet(tweet_id: str) -> Dict:
 
     tweet_dict = None
