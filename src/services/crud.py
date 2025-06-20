@@ -51,7 +51,7 @@ def get_tweets() -> List[Dict]:
 
     tweets = []
     
-    for tweet in TweetDocument.objects().order_by('-created_at'):
+    for tweet in TweetDocument.objects().limit(20).order_by('-created_at'):
         tweets.append(json.loads(tweet.to_json()))
 
     logger.info(f"Retrieved {len(tweets)} tweets.")
