@@ -1,5 +1,7 @@
-from typing import List, Dict
+from typing import List, Dict, Optional
 import json
+from datetime import datetime
+
 from src.db.models import TweetDocument, TweetReplyDocument
 from src.utils.logging import logger
 
@@ -47,11 +49,19 @@ def update_tweet(tweet_id: str, user_id: str, tweet_content: str) -> str:
     
     return 0
 
-def get_tweets() -> List[Dict]:
+def get_tweets(cursor: str=None, limit: int = 1) -> List[Dict]:
 
     tweets = []
+
+    query = TweetDocument.objects()
+
+    logger.info(f"Fetching tweets with cursor: {cursor} and limit: {limit}")
+
+    if cursor:
+        cursor = datetime.fromisoformat(cursor)
+        query = query.filter(created_at__lt=cursor)
     
-    for tweet in TweetDocument.objects().order_by('-created_at'):
+    for tweet in query.order_by('-created_at').limit(limit):
         tweets.append(json.loads(tweet.to_json()))
 
     logger.info(f"Retrieved {len(tweets)} tweets.")
