@@ -1,6 +1,6 @@
-from python:3.12
+FROM python:3.12
 
-WORKDIR app
+WORKDIR /app
 COPY . .
 
 RUN pip install -r requirements.txt

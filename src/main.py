@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, APIRouter
+from fastapi import FastAPI, Depends, HTTPException, APIRouter, Query
 from fastapi.responses import Response
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
@@ -45,9 +45,9 @@ def metrics():
     return Response(content=metrics_data, media_type=CONTENT_TYPE_LATEST)
 
 @router.get("/tweets/")
-def _get_tweets(current_user: str = Depends(get_current_user)):
+def _get_tweets(cursor: str = Query(None), limit: int = 4, current_user: str = Depends(get_current_user)):
     start_time = time.time()
-    result = get_tweets()
+    result = get_tweets(cursor=cursor, limit=limit)
     end_time = time.time()
     latency = (end_time - start_time)
     REQUEST_DURATION.labels(endpoint="/get/tweets").observe(latency)
